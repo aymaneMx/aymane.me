@@ -2,6 +2,10 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
+  router: {
+    mode: 'history'
+  },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'aymaneMx.com',
