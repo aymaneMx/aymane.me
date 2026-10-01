@@ -1,3 +1,9 @@
+const { SITE_ORIGIN, isGa4MeasurementId } = require('./utils/site')
+
+const googleAnalyticsId = isGa4MeasurementId(process.env.GOOGLE_ANALYTICS_ID)
+  ? process.env.GOOGLE_ANALYTICS_ID
+  : ''
+
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
@@ -34,6 +40,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     "@/plugins/util",
+    "@/plugins/gtag.client.js",
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -44,7 +51,6 @@ export default {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     'vue-notion/nuxt',
-    '@nuxtjs/google-analytics',
     '@nuxtjs/eslint-module'
   ],
 
@@ -55,6 +61,10 @@ export default {
     'nuxt-speedkit'
   ],
 
+  publicRuntimeConfig: {
+    googleAnalyticsId
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
   colorMode: {
@@ -63,17 +73,12 @@ export default {
 
   // Sitemap Configuration: https://sitemap.nuxtjs.org/usage/sitemap-options#from-a-function-which-returns-a-promise
   sitemap: {
-    hostname: process.env.SITEMAP_HOSTNAME,
+    hostname: SITE_ORIGIN,
     routes: async () => {
       const notion = require('vue-notion')
       const pageTable = await notion.getPageTable("ceef6f1a895a46b2a0e4a87b41405547")
       return pageTable.filter((item) => !!item.public).map((item) => `/posts/${item.slug}`)
     }
-  },
-
-  // Google Analytics Configuration: https://google-analytics.nuxtjs.org
-  googleAnalytics: {
-    id: process.env.GOOGLE_ANALYTICS_ID,
   },
 
   // speedkit: a tool to score 100% in lighthouse
