@@ -66,7 +66,14 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    extend (config, { isClient }) {
+      if (isClient) {
+        const path = require('path')
+        config.resolve.alias['@/utils/notion'] = path.resolve(__dirname, 'utils/notion.client.js')
+      }
+    }
+  },
   colorMode: {
     classSuffix: ''
   },
@@ -75,8 +82,8 @@ export default {
   sitemap: {
     hostname: SITE_ORIGIN,
     routes: async () => {
-      const notion = require('vue-notion')
-      const pageTable = await notion.getPageTable("ceef6f1a895a46b2a0e4a87b41405547")
+      const { getPageTable } = require('./utils/notion')
+      const pageTable = await getPageTable("ceef6f1a895a46b2a0e4a87b41405547")
       return pageTable.filter((item) => !!item.public).map((item) => `/posts/${item.slug}`)
     }
   },

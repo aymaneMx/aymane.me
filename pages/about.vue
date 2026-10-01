@@ -1,7 +1,8 @@
 <script>
 export default {
-  async asyncData({$notion}) {
-    const blockMap = await $notion.getPageBlocks("ad2346af0894443d8906cf78de4f310f")
+  async asyncData() {
+    const { getPageBlocks } = require('@/utils/notion')
+    const blockMap = await getPageBlocks("ad2346af0894443d8906cf78de4f310f")
     return {blockMap}
   },
   head: {

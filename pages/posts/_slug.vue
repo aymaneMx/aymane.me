@@ -11,14 +11,16 @@ import 'prismjs/components/prism-javascript'
 import { postUrl } from '@/utils/site'
 
 export default {
-  async asyncData({ $notion, params, error }) {
-    const pageTable = await $notion.getPageTable(
-      "ceef6f1a895a46b2a0e4a87b41405547"
-    )
+  async asyncData({ params, error }) {
+    const { getPageTable, getPageBlocks } = require('@/utils/notion')
+    const pageTable = await getPageTable("ceef6f1a895a46b2a0e4a87b41405547")
     const page = pageTable.find(
       (item) => item.public && item.slug === params.slug
     )
-    const blockMap = await $notion.getPageBlocks(page ? page.id : params.slug)
+    if (!page) {
+      return error({ statusCode: 404, message: "Post not found" })
+    }
+    const blockMap = await getPageBlocks(page.id)
     if (!blockMap || blockMap.error) {
       return error({ statusCode: 404, message: "Post not found" })
     }
